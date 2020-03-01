@@ -189,6 +189,18 @@ class Product
         return $this;
     }
 
+    public function getModel(): ?string
+    {
+        return $this->model;
+    }
+
+    public function setModel(string $model): self
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
     public function getWeight(): ?int
     {
         return $this->weight;
