@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +14,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 /**
  * @Route("/customer")
  */
-class CustomerController extends AbstractController
+class CustomerController extends BaseController
 {
 
     /**
@@ -26,7 +25,7 @@ class CustomerController extends AbstractController
      */
     public function index(CustomerRepository $customerRepository, SerializerInterface $serializer): Response
     {
-        $customers = $customerRepository->findAll();
+        $customers = $customerRepository->findByClient($this->getUser());
         $data = $serializer->serialize($customers, 'json', [
             'groups' => ['list']
         ]);
@@ -46,13 +45,21 @@ class CustomerController extends AbstractController
     public function show(Customer $customer, CustomerRepository $customerRepository, SerializerInterface $serializer): Response
     {
         $customer = $customerRepository->find($customer->getId());
-        $data = $serializer->serialize($customer, 'json', [
-            'groups' => ['show']
-        ]);
+        if ($customer->getClient() === $this->getUser()) {
+            $data = $serializer->serialize($customer, 'json', [
+                'groups' => ['show']
+            ]);
 
-        return new Response($data, 200, [
-            'Content-Type' => 'application/json'
-        ]);
+            return new Response($data, 200, [
+                'Content-Type' => 'application/json'
+            ]);
+        }
+
+        $data = [
+            'status' => 403,
+            'message' => 'Acces interdit'
+        ];
+        return new JsonResponse($data, 403);
     }
 
     /**
@@ -64,7 +71,10 @@ class CustomerController extends AbstractController
      */
     public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
     {
+        /** @var  $customer  Customer*/
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
+        $customer->setClient($this->getUser());
+
         $entityManager->persist($customer);
         $entityManager->flush();
         $data = [

@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -12,7 +11,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 /**
  * @Route("/product")
  */
-class ProductController extends AbstractController
+class ProductController extends BaseController
 {
     /**
      * @Route("/", name="list_products")
