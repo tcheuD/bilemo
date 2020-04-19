@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ProductRepository")
@@ -13,66 +14,79 @@ class Product
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"list", "show"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"list", "show"})
      */
     private $operating_system;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"list", "show"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"list", "show"})
      */
     private $release_date;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"show"})
      */
     private $color;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"show"})
      */
     private $brand;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"list", "show"})
      */
     private $price;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"show"})
      */
     private $display_type;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"show"})
      */
     private $resolution;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"show"})
      */
     private $battery;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"show"})
      */
     private $weight;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"list", "show"})
      */
     private $stock;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"list", "show"})
      */
     private $product_description;
 

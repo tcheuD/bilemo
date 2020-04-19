@@ -2,15 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api")
- */
-class SecurityController extends AbstractController
+class SecurityController extends BaseController
 {
     /**
      * @Route("/security", name="security")
@@ -24,16 +20,16 @@ class SecurityController extends AbstractController
 
     /**
      * @Route("/login_check", name="login", methods={"POST"})
+     * @param Request $request
      * @return JsonResponse
      */
     public function login(Request $request): JsonResponse
     {
         $user = $this->getUser();
-        dump($user);
-        die();
+
         return $this->json([
             'email' => $user->getEmail(),
-            'roles'    => $user->getRoles()
+            'roles' => $user->getRoles()
         ]);
     }
 }
