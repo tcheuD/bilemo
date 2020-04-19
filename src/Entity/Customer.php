@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
@@ -21,30 +22,40 @@ class Customer
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"list", "show"})
+     * @Assert\NotBlank
+     * @Assert\Length(min="2", max="255")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"list", "show"})
+     * @Assert\NotBlank()
+     * @Assert\Length(min="2", max="255")
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"show"})
+     * @Assert\NotBlank()
+     * @Assert\Email(message = "The email '{{ value }}' is not a valid email.")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"show"})
+     * @Assert\NotBlank()
+     * @Assert\Length(min="2", max="255")
      */
     private $adress;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"list", "show"})
+     * @Assert\NotBlank()
+     * @Assert\Length(min="2", max="50")
      */
     private $city;
 

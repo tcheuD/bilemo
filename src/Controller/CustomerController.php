@@ -59,6 +59,7 @@ class CustomerController extends BaseController
             'status' => 403,
             'message' => 'Acces interdit'
         ];
+
         return new JsonResponse($data, 403);
     }
 
@@ -71,17 +72,43 @@ class CustomerController extends BaseController
      */
     public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
     {
-        /** @var  $customer  Customer*/
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
         $customer->setClient($this->getUser());
 
         $entityManager->persist($customer);
         $entityManager->flush();
+
         $data = [
             'status' => 201,
             'message' => 'Le téléphone a bien été ajouté'
         ];
 
         return new JsonResponse($data, 201);
+    }
+
+    /**
+     * @Route("/{id}", name="delete_customer", methods={"DELETE"})
+     * @param Customer $customer
+     * @param EntityManagerInterface $entityManager
+     * @param CustomerRepository $customerRepository
+     * @return JsonResponse
+     */
+    public function delete(Customer $customer, EntityManagerInterface $entityManager, CustomerRepository $customerRepository): JsonResponse
+    {
+        $customer = $customerRepository->find($customer->getId());
+
+        if ($customer->getClient() === $this->getUser()) {
+            $entityManager->remove($customer);
+            $entityManager->flush();
+
+            return new JsonResponse(null, 204);
+        }
+
+        $data = [
+            'status' => 403,
+            'message' => 'Acces interdit'
+        ];
+
+        return new JsonResponse($data, 403);
     }
 }
