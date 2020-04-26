@@ -159,4 +159,25 @@ class Customer
 
         return $this;
     }
+
+    public function getCustomerList(): array
+    {
+        return [
+            '_links' => [
+                'self' => '/api/customer/'.$this->getId(),
+                'delete' => '/api/customer/'.$this->getId()
+            ]
+        ];
+    }
+
+    public function getCustomerShow(): array
+    {
+        return [
+            '_links' => [
+                'list all customers' => '/api/product/',
+                'self' => '/api/customer/'.$this->getId(),
+                'delete' => '/api/customer/'.$this->getId()
+            ]
+        ];
+    }
 }
