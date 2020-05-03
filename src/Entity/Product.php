@@ -249,7 +249,7 @@ class Product
     {
        return [
            '_links' => [
-               'self' => '/api/product/'.$this->getId()
+               'self' => 'GET: /api/product/'.$this->getId()
            ]
        ];
     }
@@ -258,8 +258,8 @@ class Product
     {
         return [
             '_links' => [
-                'list all products' => '/api/product/',
-                'self' => '/api/product/'.$this->getId()
+                'list all products' => 'GET: /api/product/',
+                'self' => 'GET: /api/product/'.$this->getId()
             ]
         ];
     }

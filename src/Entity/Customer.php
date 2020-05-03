@@ -71,6 +71,12 @@ class Customer
      */
     private $client;
 
+    /** @Groups({"list"}) */
+    private $customerList;
+
+    /** @Groups({"show"}) */
+    private $customerShow;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -164,8 +170,8 @@ class Customer
     {
         return [
             '_links' => [
-                'self' => '/api/customer/'.$this->getId(),
-                'delete' => '/api/customer/'.$this->getId()
+                'self' => 'GET: /api/customer/'.$this->getId(),
+                'delete' => 'DELETE: /api/customer/'.$this->getId()
             ]
         ];
     }
@@ -175,8 +181,8 @@ class Customer
         return [
             '_links' => [
                 'list all customers' => '/api/product/',
-                'self' => '/api/customer/'.$this->getId(),
-                'delete' => '/api/customer/'.$this->getId()
+                'self' => ' GET: /api/customer/'.$this->getId(),
+                'delete' => 'DELETE: /api/customer/'.$this->getId()
             ]
         ];
     }

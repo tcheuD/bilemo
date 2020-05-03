@@ -19,13 +19,22 @@ class CustomerController extends BaseController
 
     /**
      * @Route("/", name="list_customers")
+     * @param Request $request
      * @param CustomerRepository $customerRepository
      * @param SerializerInterface $serializer
      * @return Response
      */
-    public function index(CustomerRepository $customerRepository, SerializerInterface $serializer): Response
+    public function index(Request $request, CustomerRepository $customerRepository, SerializerInterface $serializer): Response
     {
-        $customers = $customerRepository->findByClient($this->getUser());
+
+        $page = $request->query->get('page');
+
+        if($page === null || $page < 1) {
+            $page = 1;
+        }
+
+        $customers = $customerRepository->findByClient($this->getUser(), $page, 5);
+
         $data = $serializer->serialize($customers, 'json', [
             'groups' => ['list']
         ]);
