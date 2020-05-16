@@ -11,8 +11,10 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
+        dump($exception);
+        die();
         $data = [
-            'status' => $exception->getStatusCode(),
+/*            'status' => $exception->getStatusCode(),*/
             'message' => 'Resource not found'
         ];
 

@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Customer;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @method Customer|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,43 +21,24 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
-    public function findByClient($client)
+    public function findByClient($client, int $page, int $limit=5): Paginator
     {
-        return $this->createQueryBuilder('c')
+        $firstResult = ($page - 1) * $limit;
+
+        $query = $this->createQueryBuilder('c')
             ->andWhere('c.client = :client')
             ->setParameter('client', $client)
             ->orderBy('c.id', 'ASC')
-            ->getQuery()
-            ->getResult()
-            ;
-    }
+            ->setFirstResult($firstResult)
+            ->setMaxResults($limit)
+            ->getQuery();
 
-    // /**
-    //  * @return Customer[] Returns an array of Customer objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $paginator = new Paginator($query);
 
-    /*
-    public function findOneBySomeField($value): ?Customer
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        if ( $page !== 1 && ($paginator->count() <= $firstResult)) {
+            throw new NotFoundHttpException('La page demandée n\'existe pas.');
+        }
+
+        return $paginator;
     }
-    */
 }

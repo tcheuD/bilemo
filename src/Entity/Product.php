@@ -90,6 +90,12 @@ class Product
      */
     private $product_description;
 
+    /** @Groups({"list"}) */
+    private $productList;
+
+    /** @Groups({"show"}) */
+    private $productShow;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -237,5 +243,24 @@ class Product
         $this->product_description = $product_description;
 
         return $this;
+    }
+
+    public function getProductList(): array
+    {
+       return [
+           '_links' => [
+               'self' => 'GET: /api/product/'.$this->getId()
+           ]
+       ];
+    }
+
+    public function getProductShow(): array
+    {
+        return [
+            '_links' => [
+                'list all products' => 'GET: /api/product/',
+                'self' => 'GET: /api/product/'.$this->getId()
+            ]
+        ];
     }
 }

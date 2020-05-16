@@ -23,7 +23,7 @@ abstract class BaseController extends WebTestCase
      * @param string $password
      * @return KernelBrowser
      */
-    protected function createAuthenticatedClient($username = 'dupont@dupont.fr', $password = 'password'): KernelBrowser
+    protected function createAuthenticatedClient($username = 'dupont0@dupont.fr', $password = 'password'): KernelBrowser
     {
         $client = self::$client;
         $client->request(
