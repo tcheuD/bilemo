@@ -11,10 +11,14 @@ abstract class BaseFixtures extends Fixture
 {
     /** @var ObjectManager */
     private $manager;
+
     /** @var Generator */
     protected $faker;
+
     private $referencesIndex = [];
+
     abstract protected function loadData(ObjectManager $manager);
+
     public function load(ObjectManager $manager)
     {
         $this->manager = $manager;
@@ -49,21 +53,22 @@ abstract class BaseFixtures extends Fixture
             $this->addReference(sprintf('%s_%d', $groupName, $i), $entity);
         }
     }
+
     protected function getRandomReference(string $groupName) {
+
         if (!isset($this->referencesIndex[$groupName])) {
-            $this->referencesIndex[$groupName] = [];
-            foreach ($this->referenceRepository->getReferences() as $key => $ref) {
-                if (strpos($key, $groupName.'_') === 0) {
-                    $this->referencesIndex[$groupName][] = $key;
-                }
-            }
+            $this->buildReferenceIndex($groupName);
         }
+
         if (empty($this->referencesIndex[$groupName])) {
             throw new \InvalidArgumentException(sprintf('Did not find any references saved with the group name "%s"', $groupName));
         }
+
         $randomReferenceKey = $this->faker->randomElement($this->referencesIndex[$groupName]);
+
         return $this->getReference($randomReferenceKey);
     }
+
     protected function getRandomReferences(string $className, int $count)
     {
         $references = [];
@@ -71,5 +76,15 @@ abstract class BaseFixtures extends Fixture
             $references[] = $this->getRandomReference($className);
         }
         return $references;
+    }
+
+    private function buildReferenceIndex(string $groupName) : void
+    {
+        $this->referencesIndex[$groupName] = [];
+        foreach ($this->referenceRepository->getReferences() as $key => $ref) {
+            if (strpos($key, $groupName.'_') === 0) {
+                $this->referencesIndex[$groupName][] = $key;
+            }
+        }
     }
 }
