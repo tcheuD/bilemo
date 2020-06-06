@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route("/customer")
@@ -112,7 +114,7 @@ class CustomerController extends BaseController
      *
      * @Route("/new", name="new_customer", methods={"POST"})
      *
-     *  @SWG\Response(
+     * @SWG\Response(
      *     response=201,
      *     description="The customer has been created",
      *     @SWG\Schema(
@@ -131,12 +133,26 @@ class CustomerController extends BaseController
      * @param Request $request
      * @param SerializerInterface $serializer
      * @param EntityManagerInterface $entityManager
-     * @return JsonResponse
+     * @param ValidatorInterface $validator
      */
-    public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
+    public function new(Request $request, SerializerInterface $serializer, EntityManagerInterface $entityManager, ValidatorInterface $validator)
     {
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
         $customer->setClient($this->getUser());
+
+        $violations = $validator->validate($customer);
+
+        if (count($violations) > 0) {
+            $violationMessages = [];
+
+            /** @var ConstraintViolation $violation */
+            foreach ($violations as $violation) {
+                $violationMessages[] = $violation->getMessage();
+            }
+            $errors = $serializer->serialize($violationMessages, 'json');
+
+            return JsonResponse::fromJsonString($errors, 400);
+        }
 
         $entityManager->persist($customer);
         $entityManager->flush();
