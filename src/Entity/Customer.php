@@ -4,10 +4,15 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
+ * @UniqueEntity(
+ *     "email",
+ *     message="This email already exist."
+ * )
  */
 class Customer
 {
@@ -22,40 +27,61 @@ class Customer
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"list", "show"})
-     * @Assert\NotBlank
-     * @Assert\Length(min="2", max="255")
+     * @Assert\NotBlank(message = "The value for firstname should not be blank")
+     * @Assert\Length(
+     *     min="2",
+     *     max="255",
+     *     minMessage = "The firstname must be at least {{ limit }} characters long",
+     *     maxMessage = "The firstname cannot be longer than {{ limit }} characters"
+     * )
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"list", "show"})
-     * @Assert\NotBlank()
-     * @Assert\Length(min="2", max="255")
+     * @Assert\NotBlank(message = "The value for name should not be blank")
+     * @Assert\Length(
+     *     min="2",
+     *     max="255",
+     *     minMessage = "The name must be at least {{ limit }} characters long",
+     *     maxMessage = "The name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Groups({"show"})
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message = "The value for email should not be blank")
      * @Assert\Email(message = "The email '{{ value }}' is not a valid email.")
+     * @Assert\Email
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"show"})
-     * @Assert\NotBlank()
-     * @Assert\Length(min="2", max="255")
+     * @Assert\NotBlank(message = "The value for adress should not be blank")
+     * @Assert\Length(
+     *     min="2",
+     *     max="255",
+     *     minMessage = "The adress must be at least {{ limit }} characters long",
+     *     maxMessage = "The adress cannot be longer than {{ limit }} characters"
+     * )
      */
     private $adress;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Groups({"list", "show"})
-     * @Assert\NotBlank()
-     * @Assert\Length(min="2", max="50")
+     * @Assert\NotBlank(message = "The value for city should not be blank")
+     * @Assert\Length(
+     *     min="2",
+     *     max="50",
+     *     minMessage = "The city must be at least {{ limit }} characters long",
+     *     maxMessage = "The city cannot be longer than {{ limit }} characters"
+     * )
      */
     private $city;
 
